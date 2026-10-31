@@ -1,6 +1,7 @@
 
 import CommunityGallery from "@/components/home/CommunityGallery";
 import FeaturesSection from "@/components/home/FeaturesSection";
+import NewsletterSection from "@/components/home/NewsletterSection";
 import UpcomingEvents from "@/components/home/UpcomingEvents";
 import Image from "next/image";
 import Link from "next/link";
@@ -101,6 +102,7 @@ const Home = () => {
       <FeaturesSection />
       <UpcomingEvents />
       <CommunityGallery />
+      <NewsletterSection />
 
       {/* Impact Statistics */}
       <section className="border-y border-[#DCE2D7] bg-white">
