@@ -1,5 +1,6 @@
 
 import FeaturesSection from "@/components/home/FeaturesSection";
+import UpcomingEvents from "@/components/home/UpcomingEvents";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -97,6 +98,7 @@ const Home = () => {
       </section>
 
       <FeaturesSection />
+      <UpcomingEvents />
 
       {/* Impact Statistics */}
       <section className="border-y border-[#DCE2D7] bg-white">
