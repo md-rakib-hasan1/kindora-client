@@ -1,69 +1,120 @@
-import Image from "next/image";
 
-export default function Home() {
+import Image from "next/image";
+import Link from "next/link";
+
+const Home = () => {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
+    <main className="flex-1 bg-[#F6F5EB]">
+      <section className="mx-auto grid max-w-7xl items-center gap-12 px-5 py-16 md:grid-cols-2 md:py-24 lg:px-8">
+        {/* Hero Content */}
+        <div className="flex flex-col items-start">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#DCE2D7] bg-[#E9EDE2] px-4 py-2">
+            <span className="h-2 w-2 rounded-full bg-[#A5C96B]" />
+            <span className="text-sm font-medium text-[#174C37]">
+              Building Stronger Communities
+            </span>
+          </div>
+
+          <h1 className="max-w-xl text-5xl leading-[1.15] font-bold tracking-tight text-[#174C37] sm:text-6xl lg:text-7xl">
+            Small Acts.
+            <br />
+            Stronger
+            <br />
+            <span className="text-[#8AAE55]">Communities.</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+
+          <p className="mt-6 max-w-lg text-base leading-8 text-[#68776D] sm:text-lg">
+            Every small action creates a meaningful change. Discover local
+            events, connect with passionate people, and make a positive impact
+            in your community.
           </p>
+
+          {/* CTA Buttons */}
+          <div className="mt-8 flex w-full flex-col gap-4 sm:w-auto sm:flex-row">
+            <Link
+              href="/events"
+              className="rounded-full bg-[#174C37] px-8 py-4 text-center text-sm font-semibold text-white transition-all hover:bg-[#253B32]"
+            >
+              Explore Events →
+            </Link>
+
+            <Link
+              href="/create-event"
+              className="rounded-full border border-[#174C37] px-8 py-4 text-center text-sm font-semibold text-[#174C37] transition-all hover:bg-[#E9EDE2]"
+            >
+              Create an Event
+            </Link>
+          </div>
+
+          {/* Trust Indicator */}
+          <div className="mt-10 flex items-center gap-3">
+            <div className="flex -space-x-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#F6F5EB] bg-[#D6A85F] text-sm">
+                🌱
+              </div>
+              <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#F6F5EB] bg-[#A5C96B] text-sm">
+                🤝
+              </div>
+              <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#F6F5EB] bg-[#B8C9B0] text-sm">
+                💚
+              </div>
+            </div>
+
+            <p className="text-sm text-[#68776D]">
+              <span className="font-semibold text-[#174C37]">
+                Be part of the change
+              </span>
+              <br />
+              Start with one small action.
+            </p>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+
+        {/* Hero Image */}
+        <div className="relative">
+          <div className="relative aspect-[4/4.2] overflow-hidden rounded-[2rem] bg-[#E9EDE2]">
             <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+              src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1000&q=85"
+              alt="Volunteers working together for their community"
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </div>
+
+          {/* Floating Card */}
+          <div className="absolute -bottom-5 -left-3 rounded-2xl border border-[#DCE2D7] bg-white p-5 shadow-lg sm:-left-8">
+            <p className="text-xs font-medium text-[#68776D]">
+              Together we can
+            </p>
+            <p className="mt-1 font-heading text-2xl font-bold text-[#174C37]">
+              Make an Impact.
+            </p>
+          </div>
         </div>
-      </main>
-    </div>
+      </section>
+
+      {/* Impact Statistics */}
+      <section className="border-y border-[#DCE2D7] bg-white">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-5 py-10 text-center md:grid-cols-4 lg:px-8">
+          {[
+            { value: "01", label: "Start with one action" },
+            { value: "02", label: "Connect with people" },
+            { value: "03", label: "Join local events" },
+            { value: "∞", label: "Create positive impact" },
+          ].map((item) => (
+            <div key={item.value} className="space-y-2">
+              <h2 className="font-heading text-3xl font-bold text-[#174C37]">
+                {item.value}
+              </h2>
+              <p className="text-sm text-[#68776D]">{item.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    </main>
   );
-}
+};
+
+export default Home;
