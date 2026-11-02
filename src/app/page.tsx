@@ -8,18 +8,18 @@ import Link from "next/link";
 
 const Home = () => {
   return (
-    <main className="flex-1 bg-[#F6F5EB]">
+    <main className="flex-1 bg-background">
       <section className="mx-auto grid max-w-7xl items-center gap-12 px-5 py-16 md:grid-cols-2 md:py-24 lg:px-8">
         {/* Hero Content */}
         <div className="flex flex-col items-start">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#DCE2D7] bg-[#E9EDE2] px-4 py-2">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-4 py-2">
             <span className="h-2 w-2 rounded-full bg-[#A5C96B]" />
-            <span className="text-sm font-medium text-[#174C37]">
+            <span className="text-sm font-medium text-primary">
               Building Stronger Communities
             </span>
           </div>
 
-          <h1 className="max-w-xl text-5xl leading-[1.15] font-bold tracking-tight text-[#174C37] sm:text-6xl lg:text-7xl">
+          <h1 className="max-w-xl text-5xl leading-[1.15] font-bold tracking-tight text-primary sm:text-6xl lg:text-7xl">
             Small Acts.
             <br />
             Stronger
@@ -27,7 +27,7 @@ const Home = () => {
             <span className="text-[#8AAE55]">Communities.</span>
           </h1>
 
-          <p className="mt-6 max-w-lg text-base leading-8 text-[#68776D] sm:text-lg">
+          <p className="mt-6 max-w-lg text-base leading-8 text-muted-foreground sm:text-lg">
             Every small action creates a meaningful change. Discover local
             events, connect with passionate people, and make a positive impact
             in your community.
@@ -37,14 +37,14 @@ const Home = () => {
           <div className="mt-8 flex w-full flex-col gap-4 sm:w-auto sm:flex-row">
             <Link
               href="/events"
-              className="rounded-full bg-[#174C37] px-8 py-4 text-center text-sm font-semibold text-white transition-all hover:bg-[#253B32]"
+              className="rounded-full bg-primary px-8 py-4 text-center text-sm font-semibold text-primary-foreground transition-all hover:opacity-90"
             >
               Explore Events →
             </Link>
 
             <Link
               href="/create-event"
-              className="rounded-full border border-[#174C37] px-8 py-4 text-center text-sm font-semibold text-[#174C37] transition-all hover:bg-[#E9EDE2]"
+              className="rounded-full border border-primary px-8 py-4 text-center text-sm font-semibold text-primary transition-all hover:bg-secondary"
             >
               Create an Event
             </Link>
@@ -53,19 +53,19 @@ const Home = () => {
           {/* Trust Indicator */}
           <div className="mt-10 flex items-center gap-3">
             <div className="flex -space-x-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#F6F5EB] bg-[#D6A85F] text-sm">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-background bg-[#D6A85F] text-sm">
                 🌱
               </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#F6F5EB] bg-[#A5C96B] text-sm">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-background bg-[#A5C96B] text-sm">
                 🤝
               </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#F6F5EB] bg-[#B8C9B0] text-sm">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-background bg-[#B8C9B0] text-sm">
                 💚
               </div>
             </div>
 
-            <p className="text-sm text-[#68776D]">
-              <span className="font-semibold text-[#174C37]">
+            <p className="text-sm text-muted-foreground">
+              <span className="font-semibold text-primary">
                 Be part of the change
               </span>
               <br />
@@ -76,7 +76,7 @@ const Home = () => {
 
         {/* Hero Image */}
         <div className="relative">
-          <div className="relative aspect-[4/4.2] overflow-hidden rounded-[2rem] bg-[#E9EDE2]">
+          <div className="relative aspect-[4/4.2] overflow-hidden rounded-[2rem] bg-secondary">
             <Image
               src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1000&q=85"
               alt="Volunteers working together for their community"
@@ -88,11 +88,11 @@ const Home = () => {
           </div>
 
           {/* Floating Card */}
-          <div className="absolute -bottom-5 -left-3 rounded-2xl border border-[#DCE2D7] bg-white p-5 shadow-lg sm:-left-8">
-            <p className="text-xs font-medium text-[#68776D]">
+          <div className="absolute -bottom-5 -left-3 rounded-2xl border border-border bg-card p-5 shadow-lg sm:-left-8">
+            <p className="text-xs font-medium text-muted-foreground">
               Together we can
             </p>
-            <p className="mt-1 font-heading text-2xl font-bold text-[#174C37]">
+            <p className="mt-1 font-heading text-2xl font-bold text-primary">
               Make an Impact.
             </p>
           </div>
@@ -105,7 +105,7 @@ const Home = () => {
       <NewsletterSection />
 
       {/* Impact Statistics */}
-      <section className="border-y border-[#DCE2D7] bg-white">
+      <section className="border-y border-border bg-card">
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-5 py-10 text-center md:grid-cols-4 lg:px-8">
           {[
             { value: "01", label: "Start with one action" },
@@ -114,10 +114,10 @@ const Home = () => {
             { value: "∞", label: "Create positive impact" },
           ].map((item) => (
             <div key={item.value} className="space-y-2">
-              <h2 className="font-heading text-3xl font-bold text-[#174C37]">
+              <h2 className="font-heading text-3xl font-bold text-primary">
                 {item.value}
               </h2>
-              <p className="text-sm text-[#68776D]">{item.label}</p>
+              <p className="text-sm text-muted-foreground">{item.label}</p>
             </div>
           ))}
         </div>

@@ -26,20 +26,20 @@ const galleryImages = [
 
 const CommunityGallery = () => {
   return (
-    <section className="bg-[#F6F5EB] px-5 py-20 lg:px-8 lg:py-28">
+    <section className="bg-background px-5 py-20 lg:px-8 lg:py-28">
       <div className="mx-auto max-w-7xl">
         <div className="mb-12 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#174C37]">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-primary">
               Moments That Matter
             </p>
 
-            <h2 className="max-w-xl text-3xl font-bold text-[#253B32] md:text-4xl lg:text-5xl">
+            <h2 className="max-w-xl text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
               Together, We Make a Difference
             </h2>
           </div>
 
-          <p className="max-w-md text-sm leading-7 text-[#68776D]">
+          <p className="max-w-md text-sm leading-7 text-muted-foreground">
             Every small act of kindness creates a meaningful story.
             Explore moments from communities coming together.
           </p>

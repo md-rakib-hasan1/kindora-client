@@ -11,9 +11,9 @@ const footerLinks = [
 
 const Footer = () => {
     return (
-        <footer className="bg-[#101D17] px-5 pt-16 pb-8 text-white lg:px-8">
+        <footer className="bg-background px-5 pt-16 pb-8 text-foreground lg:px-8">
             <div className="mx-auto max-w-7xl">
-                <div className="grid gap-12 border-b border-white/10 pb-12 md:grid-cols-2 lg:grid-cols-4">
+                <div className="grid gap-12 border-b border-border pb-12 md:grid-cols-2 lg:grid-cols-4">
                     {/* Brand */}
                     <div className="lg:col-span-2">
                         <Link href="/" className="inline-flex items-center gap-2">
@@ -25,7 +25,7 @@ const Footer = () => {
                             </span>
                         </Link>
 
-                        <p className="mt-5 max-w-sm text-sm leading-7 text-white/60">
+                        <p className="mt-5 max-w-sm text-sm leading-7 text-muted-foreground">
                             Small Acts. Stronger Communities. Join hands with people
                             who believe that meaningful change starts with small actions.
                         </p>
@@ -81,7 +81,7 @@ const Footer = () => {
                                 <li key={link.label}>
                                     <Link
                                         href={link.href}
-                                        className="text-sm text-white/60 transition-colors hover:text-[#A5C96B]"
+                                        className="text-sm text-muted-foreground transition-colors hover:text-[#A5C96B]"
                                     >
                                         {link.label}
                                     </Link>
@@ -96,14 +96,14 @@ const Footer = () => {
                             Get In Touch
                         </h3>
 
-                        <p className="text-sm leading-7 text-white/60">
+                        <p className="text-sm leading-7 text-muted-foreground">
                             Have an idea or want to make a difference in your community?
                             We would love to hear from you.
                         </p>
 
                         <a
                             href="mailto:hello@kindora.com"
-                            className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-white transition-colors hover:text-[#A5C96B]"
+                            className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-foreground transition-colors hover:text-[#A5C96B]"
                         >
                             hello@kindora.com
                             <ArrowUpRight size={15} />
@@ -111,7 +111,7 @@ const Footer = () => {
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-4 pt-7 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex flex-col gap-4 pt-7 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
                     <p>
                         © {new Date().getFullYear()} Kindora. All rights reserved.
                     </p>

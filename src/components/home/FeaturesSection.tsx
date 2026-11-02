@@ -27,7 +27,7 @@ const features = [
 
 const FeaturesSection = () => {
   return (
-    <section className="bg-[#F6F5EB] px-5 py-20 lg:px-8 lg:py-28">
+    <section className="bg-background px-5 py-20 lg:px-8 lg:py-28">
       <div className="mx-auto max-w-7xl">
         {/* Section Heading */}
         <div className="mx-auto mb-14 max-w-2xl text-center">
@@ -35,11 +35,11 @@ const FeaturesSection = () => {
             Why Kindora?
           </span>
 
-          <h2 className="mt-4 font-heading text-4xl leading-tight font-bold text-[#174C37] sm:text-5xl">
+          <h2 className="mt-4 font-heading text-4xl leading-tight font-bold text-primary sm:text-5xl">
             Good Things Happen When We Come Together.
           </h2>
 
-          <p className="mt-5 text-base leading-8 text-[#68776D]">
+          <p className="mt-5 text-base leading-8 text-muted-foreground">
             Making a difference doesn't have to be complicated. Start small,
             connect with others, and create meaningful change.
           </p>
@@ -53,23 +53,23 @@ const FeaturesSection = () => {
             return (
               <div
                 key={feature.number}
-                className="group rounded-3xl border border-[#DCE2D7] bg-white p-8 transition-all duration-300 hover:-translate-y-2 hover:border-[#A5C96B] hover:shadow-xl"
+                className="group rounded-3xl border border-border bg-card p-8 transition-all duration-300 hover:-translate-y-2 hover:border-[#A5C96B] hover:shadow-xl"
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#E9EDE2] text-[#174C37] transition-colors group-hover:bg-[#174C37] group-hover:text-white">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                     <Icon size={26} strokeWidth={1.8} />
                   </div>
 
-                  <span className="font-heading text-3xl font-bold text-[#DCE2D7]">
+                  <span className="font-heading text-3xl font-bold text-muted-foreground">
                     {feature.number}
                   </span>
                 </div>
 
-                <h3 className="mt-8 font-heading text-2xl font-bold text-[#174C37]">
+                <h3 className="mt-8 font-heading text-2xl font-bold text-primary">
                   {feature.title}
                 </h3>
 
-                <p className="mt-4 text-sm leading-7 text-[#68776D]">
+                <p className="mt-4 text-sm leading-7 text-muted-foreground">
                   {feature.description}
                 </p>
 

@@ -61,7 +61,7 @@ const events = [
 
 const UpcomingEvents = () => {
   return (
-    <section className="bg-white px-5 py-20 lg:px-8 lg:py-28">
+    <section className="bg-card px-5 py-20 lg:px-8 lg:py-28">
       <div className="mx-auto max-w-7xl">
         {/* Section Heading */}
         <div className="mb-12 flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
@@ -70,11 +70,11 @@ const UpcomingEvents = () => {
               Make a Difference
             </span>
 
-            <h2 className="mt-4 font-heading text-4xl font-bold text-[#174C37] sm:text-5xl">
+            <h2 className="mt-4 font-heading text-4xl font-bold text-primary sm:text-5xl">
               Upcoming Events
             </h2>
 
-            <p className="mt-4 text-base leading-8 text-[#68776D]">
+            <p className="mt-4 text-base leading-8 text-muted-foreground">
               Discover opportunities to connect, contribute, and create
               meaningful change in your community.
             </p>
@@ -82,7 +82,7 @@ const UpcomingEvents = () => {
 
           <Link
             href="/events"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-[#174C37] transition-colors hover:text-[#8AAE55]"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition-colors hover:text-[#8AAE55]"
           >
             Explore All Events <span>→</span>
           </Link>
@@ -93,7 +93,7 @@ const UpcomingEvents = () => {
           {events.map((event) => (
             <article
               key={event.id}
-              className="group overflow-hidden rounded-3xl border border-[#DCE2D7] bg-[#F6F5EB] transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+              className="group overflow-hidden rounded-3xl border border-border bg-background transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
             >
               {/* Thumbnail */}
               <div className="relative aspect-[16/10] overflow-hidden">
@@ -105,18 +105,18 @@ const UpcomingEvents = () => {
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
 
-                <span className="absolute top-4 left-4 rounded-full bg-[#F6F5EB] px-4 py-2 text-xs font-semibold text-[#174C37]">
+                <span className="absolute top-4 left-4 rounded-full bg-background px-4 py-2 text-xs font-semibold text-primary">
                   {event.type}
                 </span>
               </div>
 
               {/* Event Details */}
               <div className="p-6">
-                <h3 className="font-heading text-xl font-bold text-[#174C37]">
+                <h3 className="font-heading text-xl font-bold text-primary">
                   {event.title}
                 </h3>
 
-                <div className="mt-5 space-y-3 text-sm text-[#68776D]">
+                <div className="mt-5 space-y-3 text-sm text-muted-foreground">
                   <p className="flex items-center gap-3">
                     <span aria-hidden="true">📅</span>
                     {new Date(`${event.date}T00:00:00`).toLocaleDateString(
@@ -137,7 +137,7 @@ const UpcomingEvents = () => {
 
                 <Link
                   href={`/events/${event.id}`}
-                  className="mt-7 flex w-full items-center justify-center rounded-full border border-[#174C37] py-3 text-sm font-semibold text-[#174C37] transition-colors hover:bg-[#174C37] hover:text-white"
+                  className="mt-7 flex w-full items-center justify-center rounded-full border border-primary py-3 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
                 >
                   View Details →
                 </Link>

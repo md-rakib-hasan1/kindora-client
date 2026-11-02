@@ -51,20 +51,20 @@ const RegisterPage = () => {
   };
 
   return (
-    <main className="flex min-h-[80vh] items-center justify-center bg-[#F6F5EB] px-5 py-16">
-      <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-sm">
+    <main className="flex min-h-[80vh] items-center justify-center bg-background px-5 py-16">
+      <div className="w-full max-w-md rounded-2xl bg-card p-8 shadow-sm">
         <div className="mb-8 text-center">
-          <h1 className="font-heading text-3xl font-bold text-[#174C37]">
+          <h1 className="font-heading text-3xl font-bold text-primary">
             Join Kindora
           </h1>
-          <p className="mt-2 text-sm text-[#68776D]">
+          <p className="mt-2 text-sm text-muted-foreground">
             Create an account and start making a difference.
           </p>
         </div>
 
         <form onSubmit={handleRegister} className="space-y-5">
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#253B32]">
+            <label className="mb-2 block text-sm font-medium text-foreground">
               Full Name
             </label>
             <input
@@ -73,12 +73,12 @@ const RegisterPage = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Enter your full name"
-              className="w-full rounded-lg border border-[#DCE2D7] px-4 py-3 text-sm outline-none focus:border-[#174C37]"
+              className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-ring/30"
             />
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#253B32]">
+            <label className="mb-2 block text-sm font-medium text-foreground">
               Email Address
             </label>
             <input
@@ -87,12 +87,12 @@ const RegisterPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
-              className="w-full rounded-lg border border-[#DCE2D7] px-4 py-3 text-sm outline-none focus:border-[#174C37]"
+              className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-ring/30"
             />
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#253B32]">
+            <label className="mb-2 block text-sm font-medium text-foreground">
               Profile Photo URL (Optional)
             </label>
             <input
@@ -100,12 +100,12 @@ const RegisterPage = () => {
               value={image}
               onChange={(e) => setImage(e.target.value)}
               placeholder="https://example.com/photo.jpg"
-              className="w-full rounded-lg border border-[#DCE2D7] px-4 py-3 text-sm outline-none focus:border-[#174C37]"
+              className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-ring/30"
             />
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#253B32]">
+            <label className="mb-2 block text-sm font-medium text-foreground">
               Password
             </label>
             <input
@@ -115,9 +115,9 @@ const RegisterPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Create a password"
-              className="w-full rounded-lg border border-[#DCE2D7] px-4 py-3 text-sm outline-none focus:border-[#174C37]"
+              className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-ring/30"
             />
-            <p className="mt-2 text-xs text-[#68776D]">
+            <p className="mt-2 text-xs text-muted-foreground">
               Minimum 6 characters, including uppercase and lowercase letters.
             </p>
           </div>
@@ -125,17 +125,17 @@ const RegisterPage = () => {
           <button
             type="submit"
             disabled={isPending}
-            className="w-full rounded-full bg-[#174C37] py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#253B32] disabled:cursor-not-allowed disabled:opacity-60"
+            className="w-full rounded-full bg-primary py-3.5 text-sm font-semibold text-primary-foreground transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isPending ? "Creating Account..." : "Create Account"}
           </button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-[#68776D]">
+        <p className="mt-6 text-center text-sm text-muted-foreground">
           Already have an account?{" "}
           <Link
             href="/login"
-            className="font-semibold text-[#174C37] hover:underline"
+            className="font-semibold text-primary hover:underline"
           >
             Login
           </Link>

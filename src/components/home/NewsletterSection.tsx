@@ -17,9 +17,9 @@ const NewsletterSection = () => {
   };
 
   return (
-    <section className="bg-[#174C37] px-5 py-20 lg:px-8">
+    <section className="bg-secondary px-5 py-20 lg:px-8">
       <div className="mx-auto max-w-4xl text-center">
-        <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-white/10 text-[#A5C96B]">
+        <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-background/10 text-[#A5C96B]">
           <Mail size={26} />
         </div>
 
@@ -27,11 +27,11 @@ const NewsletterSection = () => {
           Stay Connected
         </p>
 
-        <h2 className="font-heading text-3xl font-bold text-white md:text-4xl lg:text-5xl">
+        <h2 className="font-heading text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
           A Little Good News Goes a Long Way.
         </h2>
 
-        <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-white/70 md:text-base">
+        <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-foreground/70 md:text-base">
           Get updates about upcoming community events, inspiring stories,
           and new opportunities to make a difference.
         </p>
@@ -46,19 +46,19 @@ const NewsletterSection = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email address"
-            className="min-h-14 flex-1 rounded-full border border-white/20 bg-white px-6 text-sm text-[#253B32] outline-none placeholder:text-[#89948C] focus:ring-2 focus:ring-[#A5C96B]"
+            className="min-h-14 flex-1 rounded-full border border-border bg-card px-6 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-[#A5C96B]"
           />
 
           <button
             type="submit"
-            className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#A5C96B] px-7 text-sm font-bold text-[#253B32] transition-colors hover:bg-[#B9D98B]"
+            className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-primary px-7 text-sm font-bold text-primary-foreground transition-colors hover:opacity-90"
           >
             Subscribe
             <ArrowRight size={18} />
           </button>
         </form>
 
-        <p className="mt-4 text-xs text-white/50">
+        <p className="mt-4 text-xs text-foreground/50">
           Be part of something good. No spam, just positive impact.
         </p>
       </div>
