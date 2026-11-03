@@ -1,0 +1,9 @@
+
+{
+  "rewrites": [
+    {
+      "source": "/api/auth/:path*",
+      "destination": "https://kindora-server-47it.onrender.com/api/auth/:path*"
+    }
+  ]
+}
