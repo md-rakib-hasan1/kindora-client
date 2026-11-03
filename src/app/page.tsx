@@ -102,7 +102,7 @@ const Home = () => {
       <FeaturesSection />
       <UpcomingEvents />
       <CommunityGallery />
-      <NewsletterSection />
+      <NewsletterSection />  
 
       {/* Impact Statistics */}
       <section className="border-y border-border bg-card">
@@ -122,6 +122,8 @@ const Home = () => {
           ))}
         </div>
       </section>
+
+         
     </main>
   );
 };
