@@ -12,6 +12,7 @@ import {
     Users,
     ArrowLeft,
     Share2,
+    CalendarPlus,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { apiFetch } from "@/lib/api";
@@ -188,6 +189,55 @@ const EventDetailsPage = () => {
         }
     };
 
+    //calender function 
+    const handleAddToCalendar = () => {
+        if (!event) return;
+
+        const startDate = new Date(event.date);
+        const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
+
+        const formatDate = (date: Date) =>
+            date.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+
+        const escapeText = (text: string) =>
+            text.replace(/\\/g, "\\\\")
+                .replace(/,/g, "\\,")
+                .replace(/;/g, "\\;")
+                .replace(/\n/g, "\\n");
+
+        const calendarContent = [
+            "BEGIN:VCALENDAR",
+            "VERSION:2.0",
+            "PRODID:-//Kindora//Community Events//EN",
+            "BEGIN:VEVENT",
+            `UID:${event._id}@kindora`,
+            `DTSTAMP:${formatDate(new Date())}`,
+            `DTSTART:${formatDate(startDate)}`,
+            `DTEND:${formatDate(endDate)}`,
+            `SUMMARY:${escapeText(event.title)}`,
+            `DESCRIPTION:${escapeText(event.description)}`,
+            `LOCATION:${escapeText(event.location)}`,
+            "END:VEVENT",
+            "END:VCALENDAR",
+        ].join("\r\n");
+
+        const blob = new Blob([calendarContent], {
+            type: "text/calendar;charset=utf-8",
+        });
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = `${event.title.replace(/[^a-z0-9]/gi, "-")}.ics`;
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        URL.revokeObjectURL(url);
+    };
+
     if (isLoading || isSessionLoading) {
         return (
             <main className="flex min-h-screen items-center justify-center bg-background">
@@ -253,13 +303,21 @@ const EventDetailsPage = () => {
                         </h1>
 
                         {/* Share Event */}
-                        <div className="mt-5">
+                        <div className="mt-5 flex flex-wrap items-center gap-3">
                             <button
                                 onClick={handleShareEvent}
-                                className="inline-flex items-center gap-2 rounded-lg border border-primary px-5 py-2.5 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
+                                className="inline-flex h-11 items-center gap-2 rounded-lg border border-primary px-5 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
                             >
                                 <Share2 size={17} />
                                 Share Event
+                            </button>
+
+                            <button
+                                onClick={handleAddToCalendar}
+                                className="inline-flex h-11 items-center gap-2 rounded-lg bg-primary px-5 text-sm font-semibold text-white transition hover:opacity-90"
+                            >
+                                <CalendarPlus size={17} />
+                                Add to Calendar
                             </button>
 
                             {shareMessage && (
