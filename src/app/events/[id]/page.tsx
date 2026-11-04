@@ -11,6 +11,7 @@ import {
     UserRound,
     Users,
     ArrowLeft,
+    Share2,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { apiFetch } from "@/lib/api";
@@ -45,6 +46,7 @@ const EventDetailsPage = () => {
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
     const [isJoined, setIsJoined] = useState(false);
+    const [shareMessage, setShareMessage] = useState("");
 
     // Fetch event details and participant count
     useEffect(() => {
@@ -156,6 +158,36 @@ const EventDetailsPage = () => {
         }
     };
 
+    // Share event
+    const handleShareEvent = async () => {
+        const shareUrl = window.location.href;
+
+        try {
+            if (navigator.share) {
+                await navigator.share({
+                    title: event?.title || "Kindora Event",
+                    text: `Join this community event: ${event?.title}`,
+                    url: shareUrl,
+                });
+            } else {
+                await navigator.clipboard.writeText(shareUrl);
+
+                setShareMessage("Event link copied successfully!");
+
+                setTimeout(() => {
+                    setShareMessage("");
+                }, 3000);
+            }
+        } catch (error) {
+            if (
+                error instanceof Error &&
+                error.name !== "AbortError"
+            ) {
+                setShareMessage("Unable to share this event.");
+            }
+        }
+    };
+
     if (isLoading || isSessionLoading) {
         return (
             <main className="flex min-h-screen items-center justify-center bg-background">
@@ -219,6 +251,23 @@ const EventDetailsPage = () => {
                         <h1 className="mt-5 font-heading text-3xl font-bold text-primary sm:text-4xl">
                             {event.title}
                         </h1>
+
+                        {/* Share Event */}
+                        <div className="mt-5">
+                            <button
+                                onClick={handleShareEvent}
+                                className="inline-flex items-center gap-2 rounded-lg border border-primary px-5 py-2.5 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
+                            >
+                                <Share2 size={17} />
+                                Share Event
+                            </button>
+
+                            {shareMessage && (
+                                <p className="mt-2 text-sm text-muted-foreground">
+                                    {shareMessage}
+                                </p>
+                            )}
+                        </div>
 
                         <div className="mt-6 grid gap-4 border-y border-border py-6 sm:grid-cols-2">
                             <div className="flex items-center gap-3 text-muted-foreground">
