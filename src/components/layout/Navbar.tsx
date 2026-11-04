@@ -132,7 +132,7 @@ const Navbar = () => {
                                     <div className="py-2">
                                         {[
                                             { label: "Create Event", href: "/create-event" },
-                                            { label: "Manage Events", href: "/manage-events" },
+                                            { label: "My Events", href: "/my-events" },
                                             { label: "Joined Events", href: "/joined-events" },
                                         ].map((item) => (
                                             <Link
@@ -264,7 +264,7 @@ const Navbar = () => {
                                 <div className="space-y-3 pl-2">
                                     {[
                                         { label: "Create Event", href: "/create-event" },
-                                        { label: "Manage Events", href: "/manage-events" },
+                                        { label: "My Events", href: "/my-events" },
                                         { label: "Joined Events", href: "/joined-events" },
                                     ].map((item) => (
                                         <Link
