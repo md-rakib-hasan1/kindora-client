@@ -13,6 +13,7 @@ import {
     ArrowLeft,
     Share2,
     CalendarPlus,
+    Navigation,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { apiFetch } from "@/lib/api";
@@ -319,6 +320,16 @@ const EventDetailsPage = () => {
                                 <CalendarPlus size={17} />
                                 Add to Calendar
                             </button>
+
+                            <a
+                                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex h-11 items-center gap-2 rounded-lg border border-primary px-5 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
+                            >
+                                <Navigation size={17} />
+                                Get Directions
+                            </a>
 
                             {shareMessage && (
                                 <p className="mt-2 text-sm text-muted-foreground">
