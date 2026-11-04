@@ -15,12 +15,11 @@ const LoginPage = () => {
   const [isPending, setIsPending] = useState(false);
   const [isGooglePending, setIsGooglePending] = useState(false);
 
-  // Get the page URL where the user should return after login
+  // Get the destination page after login
   const getCallbackURL = () => {
     const params = new URLSearchParams(window.location.search);
     const callbackURL = params.get("callbackURL");
 
-    // Allow only internal application paths
     if (
       callbackURL?.startsWith("/") &&
       !callbackURL.startsWith("//")
@@ -81,6 +80,19 @@ const LoginPage = () => {
       toast.error("Unable to login with Google. Please try again.");
       setIsGooglePending(false);
     }
+  };
+
+  // Navigate to register while preserving callback URL
+  const handleRegisterNavigation = (
+    e: React.MouseEvent<HTMLAnchorElement>
+  ) => {
+    e.preventDefault();
+
+    const callbackURL = getCallbackURL();
+
+    router.push(
+      `/register?callbackURL=${encodeURIComponent(callbackURL)}`
+    );
   };
 
   return (
@@ -176,6 +188,7 @@ const LoginPage = () => {
           Don&apos;t have an account?{" "}
           <Link
             href="/register"
+            onClick={handleRegisterNavigation}
             className="font-semibold text-primary hover:underline"
           >
             Register
