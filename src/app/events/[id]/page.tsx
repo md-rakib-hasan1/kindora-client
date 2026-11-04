@@ -1,0 +1,234 @@
+
+"use client";
+
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import { MapPin, CalendarDays, UserRound, ArrowLeft } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
+import { apiFetch } from "@/lib/api";
+
+interface Event {
+  _id: string;
+  title: string;
+  description: string;
+  type: string;
+  thumbnail: string;
+  location: string;
+  date: string;
+  creatorEmail: string;
+}
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+const EventDetailsPage = () => {
+  const params = useParams();
+  const router = useRouter();
+  const eventId = params.id as string;
+
+  const { data: session, isPending: isSessionLoading } =
+    authClient.useSession();
+
+  const [event, setEvent] = useState<Event | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isJoining, setIsJoining] = useState(false);
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+  const [isJoined, setIsJoined] = useState(false);
+
+  useEffect(() => {
+    const fetchEvent = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/events/${eventId}`);
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Failed to load event.");
+        }
+
+        setEvent(data);
+      } catch (err) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Unable to load event details."
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (eventId) {
+      fetchEvent();
+    }
+  }, [eventId]);
+
+  const handleJoinEvent = async () => {
+    if (!session?.user) {
+      router.push("/login");
+      return;
+    }
+
+    setIsJoining(true);
+    setMessage("");
+
+    try {
+      const result = await apiFetch(`/api/events/${eventId}/join`, {
+        method: "POST",
+      });
+
+      setIsJoined(true);
+      setMessage(result.message || "You joined this event successfully.");
+    } catch (err) {
+      setMessage(
+        err instanceof Error ? err.message : "Unable to join this event."
+      );
+    } finally {
+      setIsJoining(false);
+    }
+  };
+
+  if (isLoading || isSessionLoading) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-background">
+        <p className="text-muted-foreground">Loading event details...</p>
+      </main>
+    );
+  }
+
+  if (error || !event) {
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-center bg-background px-5">
+        <h1 className="font-heading text-3xl font-bold text-primary">
+          Event Not Found
+        </h1>
+        <p className="mt-3 text-muted-foreground">
+          {error || "This event may have been removed."}
+        </p>
+        <Link
+          href="/events"
+          className="mt-6 rounded-lg bg-primary px-6 py-3 text-white"
+        >
+          Back to Events
+        </Link>
+      </main>
+    );
+  }
+
+  const isCreator = session?.user?.email === event.creatorEmail;
+
+  return (
+    <main className="min-h-screen bg-background px-5 py-12 lg:px-8">
+      <div className="mx-auto max-w-5xl">
+        <Link
+          href="/events"
+          className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-primary"
+        >
+          <ArrowLeft size={18} />
+          Back to Events
+        </Link>
+
+        <article className="overflow-hidden rounded-3xl border border-border bg-card">
+          <div className="relative h-64 w-full sm:h-96">
+            <Image
+              src={event.thumbnail}
+              alt={event.title}
+              fill
+              unoptimized
+              className="object-cover"
+            />
+          </div>
+
+          <div className="p-6 sm:p-10">
+            <span className="inline-block rounded-full bg-[#8AAE55]/15 px-4 py-2 text-sm font-semibold text-[#6D913F]">
+              {event.type}
+            </span>
+
+            <h1 className="mt-5 font-heading text-3xl font-bold text-primary sm:text-4xl">
+              {event.title}
+            </h1>
+
+            <div className="mt-6 grid gap-4 border-y border-border py-6 sm:grid-cols-2">
+              <div className="flex items-center gap-3 text-muted-foreground">
+                <CalendarDays className="text-[#8AAE55]" size={21} />
+                <div>
+                  <p className="text-xs">Event Date</p>
+                  <p className="font-medium text-foreground">
+                    {new Date(event.date).toLocaleDateString("en-BD", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 text-muted-foreground">
+                <MapPin className="text-[#8AAE55]" size={21} />
+                <div>
+                  <p className="text-xs">Location</p>
+                  <p className="font-medium text-foreground">
+                    {event.location}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 text-muted-foreground sm:col-span-2">
+                <UserRound className="text-[#8AAE55]" size={21} />
+                <div>
+                  <p className="text-xs">Organized By</p>
+                  <p className="font-medium text-foreground">
+                    {event.creatorEmail}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <section className="mt-8">
+              <h2 className="font-heading text-2xl font-bold text-primary">
+                About This Event
+              </h2>
+              <p className="mt-4 whitespace-pre-line leading-8 text-muted-foreground">
+                {event.description}
+              </p>
+            </section>
+
+            <div className="mt-10 border-t border-border pt-8">
+              {isCreator ? (
+                <p className="rounded-xl bg-muted p-4 text-center text-sm text-muted-foreground">
+                  You are the organizer of this event.
+                </p>
+              ) : isJoined ? (
+                <p className="rounded-xl bg-[#8AAE55]/15 p-4 text-center font-medium text-[#6D913F]">
+                  You have successfully joined this event!
+                </p>
+              ) : (
+                <button
+                  onClick={handleJoinEvent}
+                  disabled={isJoining}
+                  className="w-full rounded-xl bg-primary px-6 py-4 font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {isJoining
+                    ? "Joining Event..."
+                    : !session
+                      ? "Login to Join Event"
+                      : "Join This Event"}
+                </button>
+              )}
+
+              {message && !isJoined && (
+                <p className="mt-4 text-center text-sm text-destructive">
+                  {message}
+                </p>
+              )}
+            </div>
+          </div>
+        </article>
+      </div>
+    </main>
+  );
+};
+
+export default EventDetailsPage;
