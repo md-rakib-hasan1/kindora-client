@@ -50,6 +50,13 @@ const EventDetailsPage = () => {
     const [isJoined, setIsJoined] = useState(false);
     const [shareMessage, setShareMessage] = useState("");
 
+    const [timeLeft, setTimeLeft] = useState({
+        days: 0,
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+    });
+
     // Fetch event details and participant count
     useEffect(() => {
         const fetchEvent = async () => {
@@ -112,6 +119,42 @@ const EventDetailsPage = () => {
             checkJoinStatus();
         }
     }, [eventId, session, isSessionLoading]);
+
+    //count down 
+    useEffect(() => {
+        if (!event?.date) return;
+
+        const calculateCountdown = () => {
+            const difference = new Date(event.date).getTime() - Date.now();
+
+            if (difference <= 0) {
+                setTimeLeft({
+                    days: 0,
+                    hours: 0,
+                    minutes: 0,
+                    seconds: 0,
+                });
+                return;
+            }
+
+            setTimeLeft({
+                days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+                hours: Math.floor(
+                    (difference / (1000 * 60 * 60)) % 24
+                ),
+                minutes: Math.floor(
+                    (difference / (1000 * 60)) % 60
+                ),
+                seconds: Math.floor((difference / 1000) % 60),
+            });
+        };
+
+        calculateCountdown();
+
+        const interval = setInterval(calculateCountdown, 1000);
+
+        return () => clearInterval(interval);
+    }, [event?.date]);
 
     // Join event
     const handleJoinEvent = async () => {
@@ -272,6 +315,7 @@ const EventDetailsPage = () => {
 
     const isCreator = session?.user?.email === event.creatorEmail;
 
+
     return (
         <main className="min-h-screen bg-background px-5 py-12 lg:px-8">
             <div className="mx-auto max-w-5xl">
@@ -303,7 +347,7 @@ const EventDetailsPage = () => {
                             {event.title}
                         </h1>
 
-                        {/* Share Event */}
+                        {/* Share, Calendar and Directions */}
                         <div className="mt-5 flex flex-wrap items-center gap-3">
                             <button
                                 onClick={handleShareEvent}
@@ -332,12 +376,48 @@ const EventDetailsPage = () => {
                             </a>
 
                             {shareMessage && (
-                                <p className="mt-2 text-sm text-muted-foreground">
+                                <p className="w-full text-sm text-muted-foreground">
                                     {shareMessage}
                                 </p>
                             )}
                         </div>
 
+                        {/* Event Countdown */}
+                        {new Date(event.date).getTime() > Date.now() ? (
+                            <div className="mt-8 rounded-2xl bg-primary p-6 text-white">
+                                <h2 className="mb-5 text-center font-heading text-xl font-bold">
+                                    Event Starts In
+                                </h2>
+
+                                <div className="grid grid-cols-4 gap-3 text-center">
+                                    {[
+                                        { label: "Days", value: timeLeft.days },
+                                        { label: "Hours", value: timeLeft.hours },
+                                        { label: "Minutes", value: timeLeft.minutes },
+                                        { label: "Seconds", value: timeLeft.seconds },
+                                    ].map((item) => (
+                                        <div
+                                            key={item.label}
+                                            className="rounded-xl bg-white/15 p-3"
+                                        >
+                                            <p className="text-2xl font-bold sm:text-3xl">
+                                                {String(item.value).padStart(2, "0")}
+                                            </p>
+
+                                            <p className="mt-1 text-xs text-white/80">
+                                                {item.label}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="mt-8 rounded-xl bg-muted p-4 text-center font-semibold text-muted-foreground">
+                                This event has already started.
+                            </div>
+                        )}
+
+                        {/* Event Information */}
                         <div className="mt-6 grid gap-4 border-y border-border py-6 sm:grid-cols-2">
                             <div className="flex items-center gap-3 text-muted-foreground">
                                 <CalendarDays
@@ -402,6 +482,7 @@ const EventDetailsPage = () => {
                             </div>
                         </div>
 
+                        {/* About Event */}
                         <section className="mt-8">
                             <h2 className="font-heading text-2xl font-bold text-primary">
                                 About This Event
@@ -412,6 +493,7 @@ const EventDetailsPage = () => {
                             </p>
                         </section>
 
+                        {/* Join Event */}
                         <div className="mt-10 border-t border-border pt-8">
                             {isCreator ? (
                                 <p className="rounded-xl bg-muted p-4 text-center text-sm text-muted-foreground">
@@ -450,6 +532,7 @@ const EventDetailsPage = () => {
             </div>
         </main>
     );
+
 };
 
 export default EventDetailsPage;
