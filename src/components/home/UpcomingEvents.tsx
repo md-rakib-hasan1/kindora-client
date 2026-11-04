@@ -1,65 +1,66 @@
 
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { CalendarDays, MapPin, Loader2 } from "lucide-react";
 
-const events = [
-  {
-    id: "1",
-    title: "Green City Cleanup",
-    type: "Environment",
-    date: "2026-12-05",
-    location: "Dhaka, Bangladesh",
-    thumbnail:
-      "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=800&q=85",
-  },
-  {
-    id: "2",
-    title: "Plant a Tree, Grow a Future",
-    type: "Plantation",
-    date: "2026-12-12",
-    location: "Mirpur, Dhaka",
-    thumbnail:
-      "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&q=85",
-  },
-  {
-    id: "3",
-    title: "Winter Clothes Donation",
-    type: "Donation",
-    date: "2026-12-18",
-    location: "Uttara, Dhaka",
-    thumbnail:
-      "https://images.unsplash.com/photo-1489493585363-d69421e0edd3?w=800&q=85",
-  },
-  {
-    id: "4",
-    title: "Community Food Drive",
-    type: "Community",
-    date: "2026-12-22",
-    location: "Dhanmondi, Dhaka",
-    thumbnail:
-      "https://images.unsplash.com/photo-1593113598332-cd288d649433?w=800&q=85",
-  },
-  {
-    id: "5",
-    title: "Neighborhood Garden Project",
-    type: "Plantation",
-    date: "2027-01-08",
-    location: "Gulshan, Dhaka",
-    thumbnail:
-      "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&q=85",
-  },
-  {
-    id: "6",
-    title: "Clean Water Awareness",
-    type: "Awareness",
-    date: "2027-01-15",
-    location: "Mohammadpur, Dhaka",
-    thumbnail:
-      "https://images.unsplash.com/photo-1541919329513-35f7af297129?w=800&q=85",
-  },
-];
+interface Event {
+  _id: string;
+  title: string;
+  type: string;
+  date: string;
+  location: string;
+  thumbnail: string;
+}
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+const formatDate = (date: string) => {
+  return new Date(date).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+};
 
 const UpcomingEvents = () => {
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchUpcomingEvents = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const response = await fetch(`${API_URL}/api/events`);
+
+        if (!response.ok) {
+          throw new Error("Failed to load upcoming events.");
+        }
+
+        const data = await response.json();
+
+        setEvents(Array.isArray(data) ? data.slice(0, 6) : []);
+      } catch (error) {
+        console.error("Failed to fetch upcoming events:", error);
+
+        setError(
+          error instanceof Error
+            ? error.message
+            : "Something went wrong. Please try again later."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUpcomingEvents();
+  }, []);
+
   return (
     <section className="bg-card px-5 py-20 lg:px-8 lg:py-28">
       <div className="mx-auto max-w-7xl">
@@ -88,63 +89,102 @@ const UpcomingEvents = () => {
           </Link>
         </div>
 
-        {/* Event Cards */}
-        <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
-          {events.map((event) => (
-            <article
-              key={event.id}
-              className="group overflow-hidden rounded-3xl border border-border bg-background transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+        {/* Loading State */}
+        {loading && (
+          <div className="flex min-h-64 flex-col items-center justify-center gap-3">
+            <Loader2 className="h-9 w-9 animate-spin text-[#8AAE55]" />
+            <p className="text-sm text-muted-foreground">
+              Loading upcoming events...
+            </p>
+          </div>
+        )}
+
+        {/* Error State */}
+        {!loading && error && (
+          <div className="rounded-2xl border border-red-200 bg-red-50 px-6 py-12 text-center dark:border-red-900 dark:bg-red-950/20">
+            <p className="font-semibold text-red-700 dark:text-red-400">
+              {error}
+            </p>
+            <Link
+              href="/events"
+              className="mt-4 inline-block text-sm font-semibold text-primary underline"
             >
-              {/* Thumbnail */}
-              <div className="relative aspect-[16/10] overflow-hidden">
-                <Image
-                  src={event.thumbnail}
-                  alt={event.title}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
+              Visit All Events
+            </Link>
+          </div>
+        )}
 
-                <span className="absolute top-4 left-4 rounded-full bg-background px-4 py-2 text-xs font-semibold text-primary">
-                  {event.type}
-                </span>
-              </div>
+        {/* Empty State */}
+        {!loading && !error && events.length === 0 && (
+          <div className="rounded-2xl border border-dashed border-border px-6 py-16 text-center">
+            <h3 className="text-xl font-bold text-primary">
+              No Upcoming Events
+            </h3>
+            <p className="mt-3 text-sm text-muted-foreground">
+              There are no upcoming community events right now. Check back
+              later for new opportunities.
+            </p>
+            <Link
+              href="/events"
+              className="mt-6 inline-block rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+            >
+              Explore Events
+            </Link>
+          </div>
+        )}
 
-              {/* Event Details */}
-              <div className="p-6">
-                <h3 className="font-heading text-xl font-bold text-primary">
-                  {event.title}
-                </h3>
+        {/* Event Cards */}
+        {!loading && !error && events.length > 0 && (
+          <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+            {events.map((event) => (
+              <article
+                key={event._id}
+                className="group overflow-hidden rounded-3xl border border-border bg-background transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+              >
+                {/* Thumbnail */}
+                <div className="relative aspect-[16/10] overflow-hidden bg-muted">
+                  <Image
+                    src={event.thumbnail}
+                    alt={event.title}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
 
-                <div className="mt-5 space-y-3 text-sm text-muted-foreground">
-                  <p className="flex items-center gap-3">
-                    <span aria-hidden="true">📅</span>
-                    {new Date(`${event.date}T00:00:00`).toLocaleDateString(
-                      "en-US",
-                      {
-                        month: "long",
-                        day: "numeric",
-                        year: "numeric",
-                      }
-                    )}
-                  </p>
-
-                  <p className="flex items-center gap-3">
-                    <span aria-hidden="true">📍</span>
-                    {event.location}
-                  </p>
+                  <span className="absolute top-4 left-4 rounded-full bg-background px-4 py-2 text-xs font-semibold text-primary">
+                    {event.type}
+                  </span>
                 </div>
 
-                <Link
-                  href={`/events/${event.id}`}
-                  className="mt-7 flex w-full items-center justify-center rounded-full border border-primary py-3 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
-                >
-                  View Details →
-                </Link>
-              </div>
-            </article>
-          ))}
-        </div>
+                {/* Event Details */}
+                <div className="p-6">
+                  <h3 className="line-clamp-1 font-heading text-xl font-bold text-primary">
+                    {event.title}
+                  </h3>
+
+                  <div className="mt-5 space-y-3 text-sm text-muted-foreground">
+                    <p className="flex items-center gap-3">
+                      <CalendarDays className="h-4 w-4 shrink-0 text-[#8AAE55]" />
+                      {formatDate(event.date)}
+                    </p>
+
+                    <p className="flex items-center gap-3">
+                      <MapPin className="h-4 w-4 shrink-0 text-[#8AAE55]" />
+                      <span className="line-clamp-1">{event.location}</span>
+                    </p>
+                  </div>
+
+                  <Link
+                    href={`/events/${event._id}`}
+                    className="mt-7 flex w-full items-center justify-center rounded-full border border-primary py-3 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+                  >
+                    View Details →
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
