@@ -1,9 +1,10 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Search, MapPin, CalendarDays, SlidersHorizontal, X } from "lucide-react";
 
 interface Event {
   _id: string;
@@ -21,6 +22,10 @@ const EventsPage = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+
+  // Search and Filter States
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -43,9 +48,44 @@ const EventsPage = () => {
     fetchEvents();
   }, []);
 
+  // Get unique event categories
+  const categories = useMemo(() => {
+    return [
+      "All",
+      ...Array.from(new Set(events.map((event) => event.type))),
+    ];
+  }, [events]);
+
+  // Search and Filter Events
+  const filteredEvents = useMemo(() => {
+    const query = searchTerm.trim().toLowerCase();
+
+    return events.filter((event) => {
+      const matchesSearch =
+        event.title.toLowerCase().includes(query) ||
+        event.description.toLowerCase().includes(query) ||
+        event.location.toLowerCase().includes(query);
+
+      const matchesCategory =
+        selectedCategory === "All" || event.type === selectedCategory;
+
+      return matchesSearch && matchesCategory;
+    });
+  }, [events, searchTerm, selectedCategory]);
+
+  // Clear all filters
+  const clearFilters = () => {
+    setSearchTerm("");
+    setSelectedCategory("All");
+  };
+
+  const hasActiveFilters =
+    searchTerm.trim() !== "" || selectedCategory !== "All";
+
   return (
     <main className="min-h-screen bg-background px-5 py-16 lg:px-8">
       <div className="mx-auto max-w-7xl">
+        {/* Page Heading */}
         <div className="mb-12 text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#8AAE55]">
             Make a Difference
@@ -61,6 +101,81 @@ const EventsPage = () => {
           </p>
         </div>
 
+        {/* Search and Filter */}
+        {!isLoading && !error && events.length > 0 && (
+          <div className="mb-10 rounded-2xl border border-border bg-card p-5 sm:p-6">
+            <div className="grid gap-5 md:grid-cols-[1fr_260px]">
+              {/* Search Input */}
+              <div>
+                <label
+                  htmlFor="event-search"
+                  className="mb-2 block text-sm font-semibold text-primary"
+                >
+                  Search Events
+                </label>
+
+                <div className="relative">
+                  <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+
+                  <input
+                    id="event-search"
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="Search by title, description or location..."
+                    className="w-full rounded-xl border border-border bg-background py-3 pl-12 pr-4 text-sm text-foreground outline-none transition focus:border-[#8AAE55] focus:ring-2 focus:ring-[#8AAE55]/20"
+                  />
+                </div>
+              </div>
+
+              {/* Category Filter */}
+              <div>
+                <label
+                  htmlFor="event-category"
+                  className="mb-2 flex items-center gap-2 text-sm font-semibold text-primary"
+                >
+                  <SlidersHorizontal className="h-4 w-4" />
+                  Filter by Category
+                </label>
+
+                <select
+                  id="event-category"
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition focus:border-[#8AAE55] focus:ring-2 focus:ring-[#8AAE55]/20"
+                >
+                  {categories.map((category) => (
+                    <option key={category} value={category}>
+                      {category === "All" ? "All Categories" : category}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Filter Summary */}
+            <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
+              <p className="text-sm text-muted-foreground">
+                <span className="font-semibold text-primary">
+                  {filteredEvents.length}
+                </span>{" "}
+                {filteredEvents.length === 1 ? "event" : "events"} found
+              </p>
+
+              {hasActiveFilters && (
+                <button
+                  onClick={clearFilters}
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-[#8AAE55] transition hover:text-primary"
+                >
+                  <X className="h-4 w-4" />
+                  Clear Filters
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Loading State */}
         {isLoading ? (
           <div className="py-20 text-center text-muted-foreground">
             Loading events...
@@ -70,14 +185,17 @@ const EventsPage = () => {
             <p className="text-destructive">{error}</p>
           </div>
         ) : events.length === 0 ? (
+          /* No Events */
           <div className="rounded-2xl border border-border bg-card px-6 py-16 text-center">
             <h2 className="font-heading text-2xl font-bold text-primary">
               No Upcoming Events
             </h2>
+
             <p className="mt-3 text-muted-foreground">
               There are no upcoming community events right now. Check back
               later or create an event to inspire others.
             </p>
+
             <Link
               href="/create-event"
               className="mt-6 inline-flex rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90"
@@ -85,19 +203,44 @@ const EventsPage = () => {
               Create an Event
             </Link>
           </div>
-        ) : (
-          <>
-            <p className="mb-6 text-sm text-muted-foreground">
-              Showing {events.length} upcoming events
+        ) : filteredEvents.length === 0 ? (
+          /* No Search Results */
+          <div className="rounded-2xl border border-dashed border-border bg-card px-6 py-16 text-center">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-muted">
+              <Search className="h-6 w-6 text-muted-foreground" />
+            </div>
+
+            <h2 className="mt-5 font-heading text-2xl font-bold text-primary">
+              No Matching Events Found
+            </h2>
+
+            <p className="mt-3 text-muted-foreground">
+              Try another search term or choose a different category.
             </p>
 
+            <button
+              onClick={clearFilters}
+              className="mt-6 rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+            >
+              Clear Filters
+            </button>
+          </div>
+        ) : (
+          <>
+            {/* Results Count */}
+            <p className="mb-6 text-sm text-muted-foreground">
+              Showing {filteredEvents.length} of {events.length} upcoming events
+            </p>
+
+            {/* Event Cards */}
             <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
-              {events.map((event) => (
+              {filteredEvents.map((event) => (
                 <article
                   key={event._id}
                   className="group overflow-hidden rounded-3xl border border-border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
                 >
-                  <div className="relative aspect-[16/10] overflow-hidden">
+                  {/* Thumbnail */}
+                  <div className="relative aspect-[16/10] overflow-hidden bg-muted">
                     <Image
                       src={event.thumbnail}
                       alt={event.title}
@@ -112,6 +255,7 @@ const EventsPage = () => {
                     </span>
                   </div>
 
+                  {/* Event Details */}
                   <div className="p-6">
                     <h2 className="font-heading text-xl font-bold text-primary">
                       {event.title}
@@ -122,13 +266,19 @@ const EventsPage = () => {
                     </p>
 
                     <div className="mt-5 space-y-3 text-sm text-muted-foreground">
-                      <p>📅 {new Date(event.date).toLocaleDateString("en-US", {
-                        month: "long",
-                        day: "numeric",
-                        year: "numeric",
-                      })}</p>
+                      <p className="flex items-center gap-3">
+                        <CalendarDays className="h-4 w-4 shrink-0 text-[#8AAE55]" />
+                        {new Date(event.date).toLocaleDateString("en-US", {
+                          month: "long",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                      </p>
 
-                      <p>📍 {event.location}</p>
+                      <p className="flex items-center gap-3">
+                        <MapPin className="h-4 w-4 shrink-0 text-[#8AAE55]" />
+                        {event.location}
+                      </p>
                     </div>
 
                     <Link
