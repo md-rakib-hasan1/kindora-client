@@ -133,7 +133,7 @@ const Navbar = () => {
                                         {[
                                             { label: "Create Event", href: "/create-event" },
                                             { label: "My Events", href: "/my-events" },
-                                            { label: "Joined Events", href: "/joined-events" },
+                                            { label: "My Joined Events", href: "/joined-events" },
                                         ].map((item) => (
                                             <Link
                                                 key={item.href}
@@ -265,7 +265,7 @@ const Navbar = () => {
                                     {[
                                         { label: "Create Event", href: "/create-event" },
                                         { label: "My Events", href: "/my-events" },
-                                        { label: "Joined Events", href: "/joined-events" },
+                                        { label: "My Joined Events", href: "/joined-events" },
                                     ].map((item) => (
                                         <Link
                                             key={item.href}
