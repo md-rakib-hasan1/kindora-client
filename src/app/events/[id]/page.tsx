@@ -5,9 +5,16 @@ import { useEffect, useState } from "react";
 import { usePathname, useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, CalendarDays, UserRound, ArrowLeft } from "lucide-react";
+import {
+    MapPin,
+    CalendarDays,
+    UserRound,
+    Users,
+    ArrowLeft,
+} from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { apiFetch } from "@/lib/api";
+
 interface Event {
     _id: string;
     title: string;
@@ -17,6 +24,7 @@ interface Event {
     location: string;
     date: string;
     creatorEmail: string;
+    participantCount: number;
 }
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -33,14 +41,18 @@ const EventDetailsPage = () => {
     const [event, setEvent] = useState<Event | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isJoining, setIsJoining] = useState(false);
+    const [isJoinStatusLoading, setIsJoinStatusLoading] = useState(false);
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
     const [isJoined, setIsJoined] = useState(false);
 
+    // Fetch event details and participant count
     useEffect(() => {
         const fetchEvent = async () => {
             try {
-                const response = await fetch(`${API_URL}/api/events/${eventId}`);
+                const response = await fetch(
+                    `${API_URL}/api/events/${eventId}`
+                );
 
                 const data = await response.json();
 
@@ -65,6 +77,39 @@ const EventDetailsPage = () => {
         }
     }, [eventId]);
 
+    // Check whether the current user has already joined
+    useEffect(() => {
+        const checkJoinStatus = async () => {
+            if (isSessionLoading) return;
+
+            if (!session?.user) {
+                setIsJoined(false);
+                setIsJoinStatusLoading(false);
+                return;
+            }
+
+            setIsJoinStatusLoading(true);
+
+            try {
+                const result = await apiFetch(
+                    `/api/events/${eventId}/join-status`
+                );
+
+                setIsJoined(result.isJoined);
+            } catch (err) {
+                console.error("Failed to check join status:", err);
+                setIsJoined(false);
+            } finally {
+                setIsJoinStatusLoading(false);
+            }
+        };
+
+        if (eventId) {
+            checkJoinStatus();
+        }
+    }, [eventId, session, isSessionLoading]);
+
+    // Join event
     const handleJoinEvent = async () => {
         if (!session?.user) {
             router.push(
@@ -77,15 +122,34 @@ const EventDetailsPage = () => {
         setMessage("");
 
         try {
-            const result = await apiFetch(`/api/events/${eventId}/join`, {
-                method: "POST",
-            });
+            const result = await apiFetch(
+                `/api/events/${eventId}/join`,
+                {
+                    method: "POST",
+                }
+            );
 
             setIsJoined(true);
-            setMessage(result.message || "You joined this event successfully.");
+
+            // Update participant count immediately
+            setEvent((previousEvent) => {
+                if (!previousEvent) return previousEvent;
+
+                return {
+                    ...previousEvent,
+                    participantCount:
+                        (previousEvent.participantCount || 0) + 1,
+                };
+            });
+
+            setMessage(
+                result.message || "You joined this event successfully."
+            );
         } catch (err) {
             setMessage(
-                err instanceof Error ? err.message : "Unable to join this event."
+                err instanceof Error
+                    ? err.message
+                    : "Unable to join this event."
             );
         } finally {
             setIsJoining(false);
@@ -95,7 +159,9 @@ const EventDetailsPage = () => {
     if (isLoading || isSessionLoading) {
         return (
             <main className="flex min-h-screen items-center justify-center bg-background">
-                <p className="text-muted-foreground">Loading event details...</p>
+                <p className="text-muted-foreground">
+                    Loading event details...
+                </p>
             </main>
         );
     }
@@ -106,9 +172,11 @@ const EventDetailsPage = () => {
                 <h1 className="font-heading text-3xl font-bold text-primary">
                     Event Not Found
                 </h1>
+
                 <p className="mt-3 text-muted-foreground">
                     {error || "This event may have been removed."}
                 </p>
+
                 <Link
                     href="/events"
                     className="mt-6 rounded-lg bg-primary px-6 py-3 text-white"
@@ -154,21 +222,30 @@ const EventDetailsPage = () => {
 
                         <div className="mt-6 grid gap-4 border-y border-border py-6 sm:grid-cols-2">
                             <div className="flex items-center gap-3 text-muted-foreground">
-                                <CalendarDays className="text-[#8AAE55]" size={21} />
+                                <CalendarDays
+                                    className="text-[#8AAE55]"
+                                    size={21}
+                                />
                                 <div>
                                     <p className="text-xs">Event Date</p>
                                     <p className="font-medium text-foreground">
-                                        {new Date(event.date).toLocaleDateString("en-BD", {
-                                            day: "numeric",
-                                            month: "long",
-                                            year: "numeric",
-                                        })}
+                                        {new Date(event.date).toLocaleDateString(
+                                            "en-BD",
+                                            {
+                                                day: "numeric",
+                                                month: "long",
+                                                year: "numeric",
+                                            }
+                                        )}
                                     </p>
                                 </div>
                             </div>
 
                             <div className="flex items-center gap-3 text-muted-foreground">
-                                <MapPin className="text-[#8AAE55]" size={21} />
+                                <MapPin
+                                    className="text-[#8AAE55]"
+                                    size={21}
+                                />
                                 <div>
                                     <p className="text-xs">Location</p>
                                     <p className="font-medium text-foreground">
@@ -177,8 +254,27 @@ const EventDetailsPage = () => {
                                 </div>
                             </div>
 
+                            <div className="flex items-center gap-3 text-muted-foreground">
+                                <Users
+                                    className="text-[#8AAE55]"
+                                    size={21}
+                                />
+                                <div>
+                                    <p className="text-xs">Participants</p>
+                                    <p className="font-medium text-foreground">
+                                        {event.participantCount ?? 0}{" "}
+                                        {event.participantCount === 1
+                                            ? "Person Joined"
+                                            : "People Joined"}
+                                    </p>
+                                </div>
+                            </div>
+
                             <div className="flex items-center gap-3 text-muted-foreground sm:col-span-2">
-                                <UserRound className="text-[#8AAE55]" size={21} />
+                                <UserRound
+                                    className="text-[#8AAE55]"
+                                    size={21}
+                                />
                                 <div>
                                     <p className="text-xs">Organized By</p>
                                     <p className="font-medium text-foreground">
@@ -192,6 +288,7 @@ const EventDetailsPage = () => {
                             <h2 className="font-heading text-2xl font-bold text-primary">
                                 About This Event
                             </h2>
+
                             <p className="mt-4 whitespace-pre-line leading-8 text-muted-foreground">
                                 {event.description}
                             </p>
@@ -201,6 +298,10 @@ const EventDetailsPage = () => {
                             {isCreator ? (
                                 <p className="rounded-xl bg-muted p-4 text-center text-sm text-muted-foreground">
                                     You are the organizer of this event.
+                                </p>
+                            ) : isJoinStatusLoading ? (
+                                <p className="rounded-xl bg-muted p-4 text-center text-sm text-muted-foreground">
+                                    Checking your join status...
                                 </p>
                             ) : isJoined ? (
                                 <p className="rounded-xl bg-[#8AAE55]/15 p-4 text-center font-medium text-[#6D913F]">
