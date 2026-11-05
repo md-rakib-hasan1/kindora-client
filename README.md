@@ -1,36 +1,86 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Kindora — Social Development Events Platform
+
+**Live Website:** https://kindora-client-seven.vercel.app/
+
+Kindora is a community-driven platform that helps people discover, create, and participate in social development events. Users can join community initiatives, manage their own events, and contribute to making a positive impact.
+
+## Key Features
+
+- **User Authentication:** Register and log in using email and password or Google authentication.
+- **Discover Upcoming Events:** Browse upcoming social development events and explore event details.
+- **Create Events:** Authenticated users can create community events with descriptions, locations, dates, categories, and images.
+- **Join Events:** Logged-in users can join upcoming events and view participant information.
+- **Manage Your Events:** Event creators can update or delete their own events.
+- **Joined Events:** View and manage events you have joined.
+- **Search and Filter:** Find events by title, description, location, and category.
+- **Light and Dark Mode:** Switch between light and dark themes.
+- **Responsive Design:** Enjoy the platform on desktop, tablet, and mobile devices.
+
+## Technologies Used
+
+- Next.js (App Router)
+- React
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- Better Auth
+- MongoDB
+- Express.js
+- JWT Authentication
 
 ## Getting Started
 
-First, run the development server:
+Follow these steps to run the client application locally.
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/md-rakib-hasan1/kindora-client.git
+```
+
+### 2. Navigate to the Project
+
+```bash
+cd kindora-client
+```
+
+### 3. Install Dependencies
+
+```bash
+npm install
+```
+
+### 4. Configure Environment Variables
+
+Create a `.env.local` file in the project root and configure the required environment variables:
+
+```env
+NEXT_PUBLIC_AUTH_URL=http://localhost:5000
+NEXT_PUBLIC_API_URL=http://localhost:5000
+```
+
+Use the appropriate local and production URLs for your environment.
+
+### 5. Start the Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Related Repository
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Backend Repository:** https://github.com/md-rakib-hasan1/kindora-server
 
-## Learn More
+**Backend Live API:** https://kindora-server-47it.onrender.com
 
-To learn more about Next.js, take a look at the following resources:
+## Deployment
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The client application is deployed on Vercel.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Live Website:** https://kindora-client-seven.vercel.app/
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+© 2026 Kindora. Building stronger communities together.
