@@ -36,15 +36,14 @@ const UpcomingEvents = () => {
         setLoading(true);
         setError("");
 
-        const response = await fetch(`${API_URL}/api/events`);
-
+        const response = await fetch(`${API_URL}/api/events/featured`);
         if (!response.ok) {
           throw new Error("Failed to load upcoming events.");
         }
 
         const data = await response.json();
 
-        setEvents(Array.isArray(data) ? data.slice(0, 6) : []);
+        setEvents(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Failed to fetch upcoming events:", error);
 
