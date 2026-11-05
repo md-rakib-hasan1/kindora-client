@@ -47,6 +47,19 @@ const Navbar = () => {
 
     const user = session?.user;
 
+    const getUserInitials = (name?: string | null) => {
+        if (!name?.trim()) return "U";
+
+        return name
+            .trim()
+            .split(/\s+/)
+            .slice(0, 2)
+            .map((part) => part[0].toUpperCase())
+            .join("");
+    };
+
+
+
     return (
         <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
             <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
@@ -110,8 +123,8 @@ const Navbar = () => {
                                         className="h-8 w-8 rounded-full object-cover"
                                     />
                                 ) : (
-                                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                                        <User size={17} />
+                                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+                                        {getUserInitials(user.name)}
                                     </div>
                                 )}
 
@@ -119,10 +132,10 @@ const Navbar = () => {
                             </button>
 
                             {isProfileOpen && (
-                                <div className="absolute right-0 mt-3 w-60 rounded-xl border border-border bg-background p-2 shadow-xl">
+                                <div className="absolute right-0 mt-3 w-72 rounded-xl border border-border bg-background p-2 shadow-xl">
                                     <div className="border-b border-border px-3 py-3">
-                                        <p className="truncate text-sm font-semibold text-foreground">
-                                            {user.name}
+                                        <p className="whitespace-normal break-words text-base font-semibold text-foreground">
+                                            {user.name || "User"}
                                         </p>
                                         <p className="truncate text-xs text-muted-foreground">
                                             {user.email}
@@ -132,7 +145,7 @@ const Navbar = () => {
                                     <div className="py-2">
                                         {[
                                             { label: "Create Event", href: "/create-event" },
-                                            { label: "My Events", href: "/my-events" },
+                                            { label: "Manage Events", href: "/my-events" },
                                             { label: "My Joined Events", href: "/joined-events" },
                                         ].map((item) => (
                                             <Link
@@ -187,7 +200,7 @@ const Navbar = () => {
                 </button>
             </nav>
 
-            {/* Mobile Menu */}
+
 
             {/* Mobile Menu */}
             {isMenuOpen && (
@@ -246,14 +259,14 @@ const Navbar = () => {
                                             className="h-11 w-11 rounded-full object-cover"
                                         />
                                     ) : (
-                                        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                                            <User size={20} />
+                                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+                                            {getUserInitials(user.name)}
                                         </div>
                                     )}
 
                                     <div className="min-w-0">
-                                        <p className="truncate text-sm font-semibold text-foreground">
-                                            {user.name}
+                                        <p className="break-words text-sm font-semibold text-foreground">
+                                            {user.name || "User"}
                                         </p>
                                         <p className="truncate text-xs text-muted-foreground">
                                             {user.email}
@@ -264,7 +277,7 @@ const Navbar = () => {
                                 <div className="space-y-3 pl-2">
                                     {[
                                         { label: "Create Event", href: "/create-event" },
-                                        { label: "My Events", href: "/my-events" },
+                                        { label: "Manage Events", href: "/my-events" },
                                         { label: "My Joined Events", href: "/joined-events" },
                                     ].map((item) => (
                                         <Link
