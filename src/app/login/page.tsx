@@ -35,13 +35,26 @@ const LoginPage = () => {
     e: React.FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
+
+    const trimmedEmail = email.trim();
+
+    if (!trimmedEmail) {
+      toast.error("Please enter your email address.");
+      return;
+    }
+
+    if (!password) {
+      toast.error("Please enter your password.");
+      return;
+    }
+
     setIsPending(true);
 
     const callbackURL = getCallbackURL();
 
     try {
       const { error } = await authClient.signIn.email({
-        email,
+        email: trimmedEmail,
         password,
         callbackURL,
       });
@@ -67,9 +80,13 @@ const LoginPage = () => {
     setIsGooglePending(true);
 
     try {
+      const callbackPath = getCallbackURL();
+
+      const callbackURL = `${window.location.origin}${callbackPath}`;
+
       const { error } = await authClient.signIn.social({
         provider: "google",
-        callbackURL: getCallbackURL(),
+        callbackURL,
       });
 
       if (error) {
