@@ -33,6 +33,20 @@ const CreateEventPage = () => {
         date: "",
     });
 
+    // Get local date and time for datetime-local input
+    const getLocalDateTime = (date: Date) => {
+        const offset = date.getTimezoneOffset() * 60000;
+
+        return new Date(date.getTime() - offset)
+            .toISOString()
+            .slice(0, 16);
+    };
+
+    const minDateTime = getLocalDateTime(
+        new Date(Date.now() + 60000)
+    );
+
+    // Handle input changes
     const handleChange = (
         e: React.ChangeEvent<
             HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -46,19 +60,90 @@ const CreateEventPage = () => {
         }));
     };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    // Validate form data
+    const validateForm = () => {
+        const title = formData.title.trim();
+        const description = formData.description.trim();
+        const thumbnail = formData.thumbnail.trim();
+        const location = formData.location.trim();
+
+        if (title.length < 5) {
+            toast.error("Event title must be at least 5 characters.");
+            return false;
+        }
+
+        if (title.length > 100) {
+            toast.error("Event title cannot exceed 100 characters.");
+            return false;
+        }
+
+        if (description.length < 20) {
+            toast.error("Description must be at least 20 characters.");
+            return false;
+        }
+
+        if (description.length > 1000) {
+            toast.error("Description cannot exceed 1000 characters.");
+            return false;
+        }
+
+        if (!eventCategories.includes(formData.type)) {
+            toast.error("Please select a valid event category.");
+            return false;
+        }
+
+        try {
+            const imageURL = new URL(thumbnail);
+
+            if (!["http:", "https:"].includes(imageURL.protocol)) {
+                toast.error("Please enter a valid image URL.");
+                return false;
+            }
+        } catch {
+            toast.error("Please enter a valid image URL.");
+            return false;
+        }
+
+        if (!location) {
+            toast.error("Please enter the event location.");
+            return false;
+        }
+
+        if (!formData.date) {
+            toast.error("Please select an event date and time.");
+            return false;
+        }
+
+        const selectedDate = new Date(formData.date);
+
+        if (
+            Number.isNaN(selectedDate.getTime()) ||
+            selectedDate.getTime() <= Date.now()
+        ) {
+            toast.error("Please select a future date and time.");
+            return false;
+        }
+
+        return true;
+    };
+
+    // Handle form submission
+    const handleSubmit = async (
+        e: React.FormEvent<HTMLFormElement>
+    ) => {
         e.preventDefault();
 
         if (!session?.user) {
             toast.error("Please login to create an event.");
+
             router.push(
                 `/login?callbackURL=${encodeURIComponent("/create-event")}`
             );
+
             return;
         }
 
-        if (new Date(formData.date).getTime() <= new Date().getTime()) {
-            toast.error("Please select a future date and time.");
+        if (!validateForm()) {
             return;
         }
 
@@ -67,24 +152,21 @@ const CreateEventPage = () => {
 
             const eventData = {
                 ...formData,
+                title: formData.title.trim(),
+                description: formData.description.trim(),
+                thumbnail: formData.thumbnail.trim(),
+                location: formData.location.trim(),
                 date: new Date(formData.date).toISOString(),
             };
 
-            const result = await apiFetch("/api/events", {
+            await apiFetch("/api/events", {
                 method: "POST",
                 body: JSON.stringify(eventData),
             });
 
             toast.success("Your event has been created successfully!");
 
-            const eventId = result.insertedId || result.eventId || result._id;
-
-            if (eventId) {
-                router.push(`/events/${eventId}`);
-            } else {
-                router.push("/events");
-            }
-
+            router.push("/events");
             router.refresh();
         } catch (error) {
             const message =
@@ -117,6 +199,7 @@ const CreateEventPage = () => {
     return (
         <main className="min-h-screen bg-[#FAF9F4] px-4 py-16 transition-colors duration-300 dark:bg-[#101A14]">
             <div className="mx-auto max-w-3xl">
+
                 {/* Page Heading */}
                 <div className="mb-10 text-center">
                     <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-green-700 dark:text-green-400">
@@ -257,7 +340,7 @@ const CreateEventPage = () => {
                             name="date"
                             type="datetime-local"
                             required
-                            min={new Date(new Date().getTime() + 60000).toISOString().slice(0, 16)}
+                            min={minDateTime}
                             value={formData.date}
                             onChange={handleChange}
                             className={`${inputClass} dark:[color-scheme:dark]`}
