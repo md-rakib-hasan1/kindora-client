@@ -110,6 +110,7 @@ const Navbar = () => {
                         <div className="relative">
                             <button
                                 type="button"
+                                title={user.name || "User"}
                                 onClick={() => setIsProfileOpen(!isProfileOpen)}
                                 className="flex items-center gap-2 rounded-full border border-border p-1.5 pr-3 transition-colors hover:bg-muted"
                             >
@@ -146,7 +147,7 @@ const Navbar = () => {
                                         {[
                                             { label: "Create Event", href: "/create-event" },
                                             { label: "Manage Events", href: "/my-events" },
-                                            { label: "My Joined Events", href: "/joined-events" },
+                                            { label: "Joined Events", href: "/joined-events" },
                                         ].map((item) => (
                                             <Link
                                                 key={item.href}
@@ -278,7 +279,7 @@ const Navbar = () => {
                                     {[
                                         { label: "Create Event", href: "/create-event" },
                                         { label: "Manage Events", href: "/my-events" },
-                                        { label: "My Joined Events", href: "/joined-events" },
+                                        { label: "Joined Events", href: "/joined-events" },
                                     ].map((item) => (
                                         <Link
                                             key={item.href}
