@@ -37,6 +37,19 @@ const RegisterPage = () => {
   ) => {
     e.preventDefault();
 
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+
+    if (!trimmedName) {
+      toast.error("Please enter your full name.");
+      return;
+    }
+
+    if (!trimmedEmail) {
+      toast.error("Please enter your email address.");
+      return;
+    }
+
     if (
       !/[A-Z]/.test(password) ||
       !/[a-z]/.test(password) ||
@@ -54,8 +67,8 @@ const RegisterPage = () => {
 
     try {
       const { error } = await authClient.signUp.email({
-        name,
-        email,
+        name: trimmedName,
+        email: trimmedEmail,
         password,
         image: image.trim() || undefined,
         callbackURL,
