@@ -45,11 +45,27 @@ const inputClass =
 const labelClass =
   "mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-200";
 
+// Convert UTC date to local datetime-local format
 const getLocalDateTime = (date: string) => {
   const localDate = new Date(date);
+
+  if (Number.isNaN(localDate.getTime())) {
+    return "";
+  }
+
   const timezoneOffset = localDate.getTimezoneOffset() * 60000;
 
   return new Date(localDate.getTime() - timezoneOffset)
+    .toISOString()
+    .slice(0, 16);
+};
+
+// Generate local minimum date and time
+const getMinimumDateTime = () => {
+  const date = new Date(Date.now() + 60000);
+  const timezoneOffset = date.getTimezoneOffset() * 60000;
+
+  return new Date(date.getTime() - timezoneOffset)
     .toISOString()
     .slice(0, 16);
 };
@@ -64,6 +80,7 @@ const EditEventPage = () => {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState("");
+
   const [formData, setFormData] = useState<EventFormData>({
     title: "",
     description: "",
@@ -73,6 +90,9 @@ const EditEventPage = () => {
     date: "",
   });
 
+  const minDateTime = getMinimumDateTime();
+
+  // Fetch event information
   useEffect(() => {
     if (isPending) return;
 
@@ -121,6 +141,7 @@ const EditEventPage = () => {
     fetchEvent();
   }, [eventId, session?.user, isPending, router]);
 
+  // Handle input changes
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -134,21 +155,92 @@ const EditEventPage = () => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  // Validate updated event information
+  const validateForm = () => {
+    const title = formData.title.trim();
+    const description = formData.description.trim();
+    const thumbnail = formData.thumbnail.trim();
+    const location = formData.location.trim();
+
+    if (title.length < 5) {
+      toast.error("Event title must be at least 5 characters.");
+      return false;
+    }
+
+    if (title.length > 100) {
+      toast.error("Event title cannot exceed 100 characters.");
+      return false;
+    }
+
+    if (description.length < 20) {
+      toast.error("Description must be at least 20 characters.");
+      return false;
+    }
+
+    if (description.length > 1000) {
+      toast.error("Description cannot exceed 1000 characters.");
+      return false;
+    }
+
+    if (!eventCategories.includes(formData.type)) {
+      toast.error("Please select a valid event category.");
+      return false;
+    }
+
+    try {
+      const imageURL = new URL(thumbnail);
+
+      if (!["http:", "https:"].includes(imageURL.protocol)) {
+        toast.error("Please enter a valid image URL.");
+        return false;
+      }
+    } catch {
+      toast.error("Please enter a valid image URL.");
+      return false;
+    }
+
+    if (!location) {
+      toast.error("Please enter the event location.");
+      return false;
+    }
+
+    if (!formData.date) {
+      toast.error("Please select an event date and time.");
+      return false;
+    }
+
+    const selectedDate = new Date(formData.date);
+
+    if (
+      Number.isNaN(selectedDate.getTime()) ||
+      selectedDate.getTime() <= Date.now()
+    ) {
+      toast.error("Please select a future date and time.");
+      return false;
+    }
+
+    return true;
+  };
+
+  // Handle event update
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
 
     if (!session?.user) {
       toast.error("Please login to update this event.");
+
       router.push(
         `/login?callbackURL=${encodeURIComponent(
           `/events/${eventId}/edit`
         )}`
       );
+
       return;
     }
 
-    if (new Date(formData.date).getTime() <= new Date().getTime()) {
-      toast.error("Please select a future date and time.");
+    if (!validateForm()) {
       return;
     }
 
@@ -156,7 +248,11 @@ const EditEventPage = () => {
       setUpdating(true);
 
       const updatedEvent = {
-        ...formData,
+        title: formData.title.trim(),
+        description: formData.description.trim(),
+        type: formData.type,
+        thumbnail: formData.thumbnail.trim(),
+        location: formData.location.trim(),
         date: new Date(formData.date).toISOString(),
       };
 
@@ -217,6 +313,7 @@ const EditEventPage = () => {
   return (
     <main className="min-h-screen bg-[#FAF9F4] px-4 py-16 transition-colors duration-300 dark:bg-[#101A14]">
       <div className="mx-auto max-w-3xl">
+
         {/* Heading */}
         <div className="mb-10 text-center">
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-green-700 dark:text-green-400">
@@ -232,7 +329,7 @@ const EditEventPage = () => {
           </p>
         </div>
 
-        {/* Form */}
+        {/* Edit Event Form */}
         <form
           onSubmit={handleSubmit}
           className="space-y-6 rounded-2xl border border-[#E5E8DF] bg-white p-6 shadow-sm transition-colors duration-300 dark:border-[#34483A] dark:bg-[#19271F] md:p-9"
@@ -356,9 +453,7 @@ const EditEventPage = () => {
               name="date"
               type="datetime-local"
               required
-              min={new Date(new Date().getTime() + 60000)
-                .toISOString()
-                .slice(0, 16)}
+              min={minDateTime}
               value={formData.date}
               onChange={handleChange}
               className={`${inputClass} dark:[color-scheme:dark]`}
