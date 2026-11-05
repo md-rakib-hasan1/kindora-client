@@ -78,7 +78,7 @@ const Home = () => {
         <div className="relative">
           <div className="relative aspect-[4/4.2] overflow-hidden rounded-[2rem] bg-secondary">
             <Image
-              src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1000&q=85"
+              src="/images/banner2.jpg"
               alt="Volunteers working together for their community"
               fill
               priority
