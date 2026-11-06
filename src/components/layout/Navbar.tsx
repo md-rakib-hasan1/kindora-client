@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
@@ -24,7 +24,8 @@ const Navbar = () => {
     const [mounted, setMounted] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
-
+   
+    const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null);
     useEffect(() => {
         const timeoutId = window.setTimeout(() => setMounted(true), 0);
 
@@ -46,7 +47,7 @@ const Navbar = () => {
     };
 
     const user = session?.user;
-
+    
     const getUserInitials = (name?: string | null) => {
         if (!name?.trim()) return "U";
 
@@ -114,17 +115,16 @@ const Navbar = () => {
                                 onClick={() => setIsProfileOpen(!isProfileOpen)}
                                 className="flex items-center gap-2 rounded-full border border-border p-1.5 pr-3 transition-colors hover:bg-muted"
                             >
-                                {user.image ? (
-                                    <Image
+                                {user.image && user.image !== failedImageUrl ? (
+                                    <img
                                         src={user.image}
                                         alt={user.name || "User"}
-                                        width={32}
-                                        height={32}
-                                        unoptimized
+                                        referrerPolicy="no-referrer"
+                                        onError={() => setFailedImageUrl(user.image)}
                                         className="h-8 w-8 rounded-full object-cover"
                                     />
                                 ) : (
-                                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+                                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-semibold text-white">
                                         {getUserInitials(user.name)}
                                     </div>
                                 )}
@@ -250,17 +250,16 @@ const Navbar = () => {
                             <div className="space-y-4">
                                 {/* Logged In Profile */}
                                 <div className="flex items-center gap-3">
-                                    {user.image ? (
-                                        <Image
+                                    {user.image && user.image !== failedImageUrl ? (
+                                        <img
                                             src={user.image}
                                             alt={user.name || "User"}
-                                            width={44}
-                                            height={44}
-                                            unoptimized
+                                            referrerPolicy="no-referrer"
+                                            onError={() => setFailedImageUrl(user.image)}
                                             className="h-11 w-11 rounded-full object-cover"
                                         />
                                     ) : (
-                                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+                                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-semibold text-white">
                                             {getUserInitials(user.name)}
                                         </div>
                                     )}
