@@ -119,7 +119,7 @@ const Navbar = () => {
                                         src={user.image}
                                         alt={user.name || "User"}
                                         referrerPolicy="no-referrer"
-                                        onError={() => setFailedImageUrl(user.image)}
+                                        onError={() => setFailedImageUrl(user.image ?? null)}
                                         className="h-8 w-8 rounded-full object-cover"
                                     />
                                 ) : (
@@ -255,7 +255,7 @@ const Navbar = () => {
                                             src={user.image}
                                             alt={user.name || "User"}
                                             referrerPolicy="no-referrer"
-                                            onError={() => setFailedImageUrl(user.image)}
+                                            onError={() => setFailedImageUrl(user.image ?? null)}
                                             className="h-11 w-11 rounded-full object-cover"
                                         />
                                     ) : (
