@@ -2,7 +2,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-// import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
@@ -145,6 +144,7 @@ const Navbar = () => {
 
                                     <div className="py-2">
                                         {[
+                                            { label: "Dashboard", href: "/dashboard" },
                                             { label: "Create Event", href: "/create-event" },
                                             { label: "Manage Events", href: "/my-events" },
                                             { label: "Joined Events", href: "/joined-events" },
@@ -276,6 +276,7 @@ const Navbar = () => {
 
                                 <div className="space-y-3 pl-2">
                                     {[
+                                        { label: "Dashboard", href: "/dashboard" },
                                         { label: "Create Event", href: "/create-event" },
                                         { label: "Manage Events", href: "/my-events" },
                                         { label: "Joined Events", href: "/joined-events" },
